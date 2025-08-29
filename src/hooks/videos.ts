@@ -4,7 +4,7 @@ import {
   fetchVideoBreakdowns,
   fetchVideoBreakdown,
   generateVideoBreakdown,
-} from './api.js';
+} from '../api/videos.js';
 
 // Hook to fetch all video breakdowns
 export const useVideoBreakdowns = () => {
@@ -29,7 +29,7 @@ export const useGenerateVideoBreakdown = () => {
   return useMutation<VideoBreakdown, Error, File>({
     mutationFn: (video: File) => generateVideoBreakdown(video),
     onSuccess: () => {
-      // Invalidate the list of video breakdowns to refetch
+      // Refetch video breakdowns
       queryClient.invalidateQueries({ queryKey: ['videoBreakdowns'] });
     },
   });

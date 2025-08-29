@@ -1,9 +1,8 @@
 import type { VideoBreakdown } from '../types/types.js';
-
-const BASE_URL = 'https://api.example.com';
+import { apiFetch } from './baseApi.js';
 
 export const fetchVideoBreakdowns = async (): Promise<VideoBreakdown[]> => {
-  const response = await fetch('/content');
+  const response = await apiFetch('/content');
   if (!response.ok) {
     throw new Error('Failed to fetch video breakdowns');
   }
@@ -14,7 +13,7 @@ export const fetchVideoBreakdowns = async (): Promise<VideoBreakdown[]> => {
 export const fetchVideoBreakdown = async (
   videoId: number,
 ): Promise<VideoBreakdown> => {
-  const response = await fetch(`/content/${videoId}`);
+  const response = await apiFetch(`/content/${videoId}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch video breakdown for video: ${videoId}`);
   }
@@ -27,7 +26,7 @@ export const generateVideoBreakdown = async (
 ): Promise<VideoBreakdown> => {
   const formData = new FormData();
   formData.append('video', video);
-  const response = await fetch('/content', { method: 'POST', body: formData });
+  const response = await apiFetch('/content', { method: 'POST', body: formData });
   if (!response.ok) {
     throw new Error('Failed to generate breakdown');
   }
