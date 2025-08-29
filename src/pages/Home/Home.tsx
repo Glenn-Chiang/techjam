@@ -1,5 +1,4 @@
 import './Home.css'
-import lynxLogo from './assets/lynx-logo.png'
 
 export function Home() {
   return (
@@ -7,10 +6,7 @@ export function Home() {
       <view className='Background' />
       <view className='App'>
         <view className='Banner'>
-          <view className='Logo'>
-             <image src={lynxLogo} className='Logo--lynx' />
-          </view>
-          <text className='Title'>React</text>
+          <text className='Title'>TikTok TechJam</text>
         </view>
         <view className='Content'>
           <text className='Description'>Upload a Video</text>
