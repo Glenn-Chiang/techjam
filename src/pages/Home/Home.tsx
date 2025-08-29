@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './Home.css';
 import { Button } from '../../components/Button.js';
 import { useNavigate } from 'react-router';
+import { Spinner } from '../../components/Spinner.js';
 
 type AppState = 'default' | 'uploaded' | 'analysing';
 
@@ -42,12 +43,21 @@ export function Home() {
           />
         )}
         {appState !== 'default' && <VideoView />}
-        {(appState === 'uploaded' || appState === 'analysing') && (
-          <Button
-            label="Analyse"
-            onTap={onTapAnalyse}
-            disabled={appState === 'analysing'}
-          />
+        {appState === 'uploaded' && (
+          <Button label="Analyse" onTap={onTapAnalyse} />
+        )}
+        {appState === 'analysing' && (
+          <view
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              gap: 8,
+            }}
+          >
+            <text style={{textAlign: 'center'}}>Analysing...</text>
+            <Spinner />
+          </view>
         )}
       </view>
     </view>
