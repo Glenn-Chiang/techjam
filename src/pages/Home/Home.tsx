@@ -13,5 +13,5 @@ export function Home() {
         <text>Upload</text>
       </view>
     </view>
-  )
+  );
 }
