@@ -1,0 +1,26 @@
+.home-page {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100vh;
+}
+
+.home-page-text {
+  font-size: var(--large-text-size);
+  margin-bottom: 20px;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.upload-button {
+  background-color: var(--primary-color);
+  padding: var(--button-padding);
+  border-radius: 8px;
+}
+
+.upload-button text {
+  color: var(--text-color);
+  font-size: 18px;
+  text-align: center;
+}

@@ -2,4 +2,6 @@
   --primary-color: #1e90ff;
   --text-color: #ffffff;
   --font-family: 'Roboto', sans-serif;
+  --large-text-size: 32px;
+  --button-padding: 16px 32px;
 }
