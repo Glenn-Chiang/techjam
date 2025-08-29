@@ -1,11 +1,10 @@
-import '@lynx-js/preact-devtools'
-import { root } from '@lynx-js/react'
-import '@lynx-js/react/debug'
+import '@lynx-js/preact-devtools';
+import { root } from '@lynx-js/react';
+import '@lynx-js/react/debug';
+import Router from './Router.js';
 
-import Layout from './Router.js'
-
-root.render(<Layout />)
+root.render(<Router />);
 
 if (import.meta.webpackHot) {
-  import.meta.webpackHot.accept()
+  import.meta.webpackHot.accept();
 }

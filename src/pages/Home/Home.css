@@ -1,5 +1,4 @@
 .home-page {
-  flex: 1;
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -13,14 +12,3 @@
   color: var(--primary-color);
 }
 
-.upload-button {
-  background-color: var(--primary-color);
-  padding: var(--button-padding);
-  border-radius: 8px;
-}
-
-.upload-button text {
-  color: var(--text-color);
-  font-size: 18px;
-  text-align: center;
-}

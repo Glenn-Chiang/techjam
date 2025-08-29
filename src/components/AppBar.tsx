@@ -5,7 +5,7 @@ import { useState } from 'react';
 export function AppBar() {
   const [activeTab, setActiveTab] = useState(0);
   const navItems = [
-    { url: '/', label: 'Upload' },
+    { url: '/', label: 'Analyse' },
     { url: '/videos', label: 'My Videos' },
   ];
   return (
