@@ -1,4 +1,4 @@
-## TEAM CORNERSTONE
+# TEAM CORNERSTONE
 
 This is a ReactLynx project bootstrapped with `create-rspeedy`.
 
