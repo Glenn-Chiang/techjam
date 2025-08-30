@@ -32,11 +32,12 @@ export const generateVideoBreakdown = async (
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url: videoUrl }),
   });
+
   if (!response.ok) {
     throw new Error('Failed to generate breakdown');
   }
-  const data = await response.json();
-  return data;
+
+  return response;
 };
 
 /* Video List API */
