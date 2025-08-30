@@ -6,13 +6,13 @@ export interface VideoBreakdown {
   thumbnailUrl: string;
   videoUrl: string;
 
-  clarity: VideoAnalysisMetric;
-  educationalValue: VideoAnalysisMetric;
-  delivery: VideoAnalysisMetric;
-  audioVisual: VideoAnalysisMetric;
-  originality: VideoAnalysisMetric;
-  length: VideoAnalysisMetric;
-  compliance: VideoAnalysisMetric
+  contentQuality: {
+    educationalValue: VideoAnalysisMetric;
+    delivery: VideoAnalysisMetric;
+    audioVisual: VideoAnalysisMetric;
+    compliance: VideoAnalysisMetric
+    length: VideoAnalysisMetric;
+  }
 }
 
 export interface VideoAnalysisMetric {
