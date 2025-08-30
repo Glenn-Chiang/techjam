@@ -5,4 +5,17 @@ export interface VideoBreakdown {
   summary: string;
   thumbnailUrl: string;
   videoUrl: string;
+
+  clarity: VideoAnalysisMetric;
+  educationalValue: VideoAnalysisMetric;
+  delivery: VideoAnalysisMetric;
+  audioVisual: VideoAnalysisMetric;
+  originality: VideoAnalysisMetric;
+  length: VideoAnalysisMetric;
+  compliance: VideoAnalysisMetric
+}
+
+export interface VideoAnalysisMetric {
+  score: number;
+  feedback: string;
 }

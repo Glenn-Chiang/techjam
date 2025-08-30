@@ -22,15 +22,10 @@
   height: 100%;
 }
 
-.video-title {
-  font-size: var(--large-text-size);
-}
-
 .score-circle {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-color: #4CAF50;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,6 +44,40 @@
   width: 100%;
 }
 
-.video-summary {
-  
+.metrics-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.metric-card {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metric-label {
+  font-weight: bold;
+}
+
+.score-bar-container {
+  flex: 1;
+  height: 20px;
+  background-color: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+}
+
+.score-text-right {
+  width: 50px;
+  text-align: right;
+  font-weight: bold;
 }
