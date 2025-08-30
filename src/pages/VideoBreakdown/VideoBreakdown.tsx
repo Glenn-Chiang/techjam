@@ -120,20 +120,12 @@ export default function VideoBreakdown() {
             className="video-thumbnail"
           />
         </view> */}
-        <view
-          style={{
-            display: 'flex',
-            gap: 4,
-            fontSize: 'var(--large-text-size)',
-            paddingTop: 8,
-          }}
-        >
-          <text>{'Analysis generated for '}</text>
-          <Link bindtap={() => {
-            window.open(location.state.url)
-          }}>{'your video'}</Link>
-          <text>{'!'}</text>
+
+        <text>{'Analysis generated for your video!'}</text>
+        <view className='url-container'>
+          <text>{location.state.url}</text>
         </view>
+
         <view
           className="score-circle"
           style={{ backgroundColor: scoreToColor(avgScore) }}
