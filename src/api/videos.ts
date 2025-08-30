@@ -33,9 +33,9 @@ export const generateVideoBreakdown = async (
     body: JSON.stringify({ url: videoUrl }),
   });
 
-  if (!response.ok) {
-    throw new Error('Failed to generate breakdown');
-  }
+  // if (!response.ok) {
+  //   throw new Error('Failed to generate breakdown');
+  // }
 
   return response;
 };

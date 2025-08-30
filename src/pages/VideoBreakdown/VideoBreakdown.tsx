@@ -8,49 +8,6 @@ import TextField from '../../components/TextField.js';
 import { useState } from 'react';
 import { Button } from '../../components/Button.js';
 
-const dummyData: VideoBreakdown = {
-  id: 1,
-  title: 'Very Interesting Video',
-  score: 94,
-  summary: 'really awesome video here',
-  videoUrl: '',
-  thumbnailUrl: 'https://picsum.photos/300/400',
-
-  // clarity: {
-  //   score: 90,
-  //   feedback:
-  //     'Concepts are explained clearly with simple examples and visual aids.',
-  // },
-  educationalValue: {
-    score: 95,
-    feedback:
-      'The video provides accurate information and adds value by connecting concepts to real-world examples.',
-  },
-  delivery: {
-    score: 85,
-    feedback:
-      'The presenter speaks confidently with good pacing, though some sections could be more dynamic.',
-  },
-  audioVisual: {
-    score: 80,
-    feedback:
-      'Audio is clear and visuals support the content, but lighting and transitions could be improved.',
-  },
-  originality: {
-    score: 88,
-    feedback:
-      'The content presents familiar topics in a unique and engaging way.',
-  },
-  length: {
-    score: 92,
-    feedback: 'The video is concise and appropriately timed for the topic.',
-  },
-  compliance: {
-    score: 100,
-    feedback: 'Content adheres to all safety and factual guidelines.',
-  },
-};
-
 interface QualityScore {
   communityGuidelines: VideoAnalysisMetric;
   education: VideoAnalysisMetric;
