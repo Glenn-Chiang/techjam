@@ -3,12 +3,15 @@ import { root } from '@lynx-js/react';
 import '@lynx-js/react/debug';
 import Router from './Router.js';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { UserProvider } from './components/UserProvider.js';
 
 const queryClient = new QueryClient();
 
 root.render(
   <QueryClientProvider client={queryClient}>
-    <Router />
+    <UserProvider>
+      <Router />
+    </UserProvider>
   </QueryClientProvider>,
 );
 
