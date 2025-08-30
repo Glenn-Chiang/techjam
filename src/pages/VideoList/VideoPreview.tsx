@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import type React from 'react';
 import type { PropsWithChildren } from 'react';
 import VideoListApi from './VideoListApi.js';
+import type { VideoBreakdownGetData } from '../VideoBreakdown/VideoBreakdown.js';
 
 export interface VideoPreviewData {
   id: string;
@@ -26,7 +27,7 @@ interface VideoAnalysisMetric {
 }
 
 interface VideoPreviewProps {
-  video: VideoPreviewData,
+  video: VideoBreakdownGetData,
   width?: number;
 }
 
@@ -117,8 +118,8 @@ export default function VideoPreview({
   width
 }: VideoPreviewProps) {
   const routeTo = useNavigate();
-  const { id, title, createdDate: uploadDate, qualityScore } = video;
-  
+  const { id, title, createdAt, education, communityGuidelines, delivery, audioVisual } = video;
+  const avgScore = (education + communityGuidelines + delivery + audioVisual) / 4;
   return (
     <view
       bindtap={() => routeTo(`/videos/p/:${id}`)}
@@ -144,12 +145,12 @@ export default function VideoPreview({
       {/* Top information */}
       <VideoPreviewOverlayTop>
         <VideoPreviewText text={title} />
-        <VideoPreviewText text={processRelativeUploadDate(uploadDate)} />
+        <VideoPreviewText text={processRelativeUploadDate(new Date(createdAt))} />
       </VideoPreviewOverlayTop>
 
       {/* Bottom information */}
       <VideoPreviewOverlayBottom>
-        <VideoPreviewText text={`★ ${qualityScore.toFixed(1)}`} />
+        <VideoPreviewText text={`★ ${avgScore.toFixed(1)}`} />
       </VideoPreviewOverlayBottom>
     </view>
   );

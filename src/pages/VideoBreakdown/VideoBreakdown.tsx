@@ -1,5 +1,8 @@
-import { useLocation, useParams } from 'react-router';
-import { useVideoBreakdown } from '../../hooks/videos.js';
+import { useLocation, useNavigate, useParams } from 'react-router';
+import {
+  useSaveVideoBreakdown,
+  useVideoBreakdown,
+} from '../../hooks/videos.js';
 import type { VideoAnalysisMetric, VideoBreakdown } from '../../types/types.js';
 import './VideoBreakdown.css';
 import { ErrorAlert } from '../../components/ErrorAlert.js';
@@ -7,6 +10,7 @@ import LoadingPage from '../../components/LoadingPage.js';
 import TextField from '../../components/TextField.js';
 import { useState } from 'react';
 import { Button } from '../../components/Button.js';
+import { useUser } from '../../hooks/auth.js';
 
 const dummyData: VideoBreakdown = {
   id: 1,
@@ -58,17 +62,58 @@ interface QualityScore {
   audioVisual: VideoAnalysisMetric;
 }
 
+export interface VideoBreakdownPostData {
+  creatorId: string;
+  title: string;
+  type: 'VIDEO';
+  url: string;
+  education: number;
+  delivery: number;
+  audioVisual: number;
+  communityGuidelines: number;
+}
+
+export interface VideoBreakdownGetData {
+  id: string;
+  creatorId: string;
+  title: string;
+  type: 'VIDEO';
+  url: string;
+  education: number;
+  delivery: number;
+  audioVisual: number;
+  communityGuidelines: number;
+  createdAt: string;
+}
+
 export default function VideoBreakdown() {
   const { videoId } = useParams();
   const location = useLocation();
+  const route = useNavigate();
   const [title, setTitle] = useState('');
   const { data, isLoading, isError, error } = useVideoBreakdown(
     Number(videoId),
   );
 
   const newBreakdownData: QualityScore = location.state.result;
+  const { mutate } = useSaveVideoBreakdown();
+  const { user } = useUser();
 
-  const onTapSaveBreakdown = () => {};
+  const onTapSaveBreakdown = () => {
+    mutate(
+      {
+        creatorId: user.id,
+        title,
+        type: 'VIDEO',
+        url: location.state.url,
+        education: newBreakdownData.education.score,
+        delivery: newBreakdownData.delivery.score,
+        audioVisual: newBreakdownData.audioVisual.score,
+        communityGuidelines: newBreakdownData.communityGuidelines.score,
+      },
+      { onSuccess: (res) => route(`/videos/p/${res.id}`) },
+    );
+  };
 
   if (isError && newBreakdownData === undefined) {
     return <ErrorAlert message={`Error loading video breakdown: ${error}`} />;

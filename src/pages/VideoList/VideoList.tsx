@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import VideoPreview, { type VideoPreviewData } from './VideoPreview.js';
-import { fetchConsumerVideos } from '../../api/videos.js';
+import VideoPreview from './VideoPreview.js';
+import { fetchVideoBreakdowns } from '../../api/videos.js';
 import { Button } from '../../components/Button.js';
 import './VideoList.css';
 import { useMemo } from 'react';
 import { useCallback } from 'react';
 import { useUser } from '../../hooks/auth.js';
 import SimplePage from '../../components/SimplePage.js';
+import type { VideoBreakdownGetData } from '../VideoBreakdown/VideoBreakdown.js';
 
 enum VideoSortParameter {
   QualityScore,
@@ -30,7 +31,15 @@ type VideoSortConfig = {
   order: SortOrder;
 };
 
-function FilterButton({ onTap, label, disabled }: { onTap: () => void; label: string; disabled?: boolean }) {
+function FilterButton({
+  onTap,
+  label,
+  disabled,
+}: {
+  onTap: () => void;
+  label: string;
+  disabled?: boolean;
+}) {
   return (
     <Button
       style={{
@@ -53,7 +62,7 @@ function FilterButton({ onTap, label, disabled }: { onTap: () => void; label: st
 
 export default function VideoList() {
   const { user } = useUser();
-  const [videos, setVideos] = useState<VideoPreviewData[]>([]);
+  const [videos, setVideos] = useState<VideoBreakdownGetData[]>([]);
   const [screenWidth, setScreenWidth] = useState(0);
   const [sortConfig, setSortConfig] = useState<VideoSortConfig>({
     param: VideoSortParameter.QualityScore,
@@ -61,9 +70,10 @@ export default function VideoList() {
   });
 
   useEffect(() => {
-    const fetchVideos = async () => setVideos(await fetchConsumerVideos(false));
+    const fetchVideos = async () =>
+      setVideos(await fetchVideoBreakdowns(user.token));
     fetchVideos();
-  }, []);
+  }, [user.token]);
 
   const makeFilter = (param: VideoSortParameter) => () =>
     setSortConfig((conf) => ({
@@ -74,56 +84,58 @@ export default function VideoList() {
   const compareVideo = (a: number, b: number, order: SortOrder) =>
     order === SortOrder.Asc ? a - b : b - a;
 
-  const videoSorter =
-    useCallback((s: VideoSortConfig) => (a: VideoPreviewData, b: VideoPreviewData) => {
-      switch (s.param) {
-        case VideoSortParameter.QualityScore:
-          return compareVideo(a.qualityScore, b.qualityScore, s.order);
+  const getAvgScore = (v: VideoBreakdownGetData) =>
+    (v.audioVisual + v.communityGuidelines + v.delivery + v.education) / 4;
 
-        case VideoSortParameter.CreatedDate:
-          return compareVideo(
-            new Date(a.createdDate).getTime(),
-            new Date(b.createdDate).getTime(),
-            s.order,
-          );
+  const videoSorter = useCallback(
+    (s: VideoSortConfig) =>
+      (a: VideoBreakdownGetData, b: VideoBreakdownGetData) => {
+        switch (s.param) {
+          case VideoSortParameter.QualityScore:
+            return compareVideo(getAvgScore(a), getAvgScore(b), s.order);
 
-        case VideoSortParameter.Clarity:
-          return compareVideo(a.clarity.score, b.clarity.score, s.order);
+          case VideoSortParameter.CreatedDate:
+            return compareVideo(
+              new Date(a.createdAt).getTime(),
+              new Date(b.createdAt).getTime(),
+              s.order,
+            );
 
-        case VideoSortParameter.EduValue:
-          return compareVideo(
-            a.educationalValue.score,
-            b.educationalValue.score,
-            s.order,
-          );
+          // case VideoSortParameter.Clarity:
+          //   return compareVideo(a.clarity.score, b.clarity.score, s.order);
 
-        case VideoSortParameter.Delivery:
-          return compareVideo(a.delivery.score, b.delivery.score, s.order);
+          case VideoSortParameter.EduValue:
+            return compareVideo(a.education, b.education, s.order);
 
-        case VideoSortParameter.AudioVisual:
-          return compareVideo(
-            a.audioVisual.score,
-            b.audioVisual.score,
-            s.order,
-          );
+          case VideoSortParameter.Delivery:
+            return compareVideo(a.delivery, b.delivery, s.order);
 
-        case VideoSortParameter.Originality:
-          return compareVideo(
-            a.originality.score,
-            b.originality.score,
-            s.order,
-          );
+          case VideoSortParameter.AudioVisual:
+            return compareVideo(a.audioVisual, b.audioVisual, s.order);
 
-        case VideoSortParameter.Length:
-          return compareVideo(a.length.score, b.length.score, s.order);
+          // case VideoSortParameter.Originality:
+          //   return compareVideo(
+          //     a.originality.score,
+          //     b.originality.score,
+          //     s.order,
+          //   );
 
-        case VideoSortParameter.Compliance:
-          return compareVideo(a.compliance.score, b.compliance.score, s.order);
+          // case VideoSortParameter.Length:
+          //   return compareVideo(a.length.score, b.length.score, s.order);
 
-        default:
-          return 0;
-      }
-    }, []);
+          case VideoSortParameter.Compliance:
+            return compareVideo(
+              a.communityGuidelines,
+              b.communityGuidelines,
+              s.order,
+            );
+
+          default:
+            return 0;
+        }
+      },
+    [],
+  );
 
   const sortedVideos = useMemo(() => {
     const arr = [...videos];
@@ -132,7 +144,11 @@ export default function VideoList() {
   }, [videos, videoSorter, sortConfig]);
 
   if (user.id === '') {
-    return <SimplePage><text>Please login to view your analysed videos.</text></SimplePage>
+    return (
+      <SimplePage>
+        <text>Please login to view your analysed videos.</text>
+      </SimplePage>
+    );
   }
 
   return (
@@ -182,13 +198,13 @@ export default function VideoList() {
           }}
         >
           <FilterButton
-            onTap={makeFilter(VideoSortParameter.Clarity)}
-            label="Clarity"
-            disabled={sortConfig.param === VideoSortParameter.Clarity}
+            onTap={makeFilter(VideoSortParameter.QualityScore)}
+            label="Educational Value"
+            disabled={sortConfig.param === VideoSortParameter.QualityScore}
           />
           <FilterButton
             onTap={makeFilter(VideoSortParameter.EduValue)}
-            label="Edu Value"
+            label="Educational Value"
             disabled={sortConfig.param === VideoSortParameter.EduValue}
           />
           <FilterButton
@@ -202,18 +218,8 @@ export default function VideoList() {
             disabled={sortConfig.param === VideoSortParameter.AudioVisual}
           />
           <FilterButton
-            onTap={makeFilter(VideoSortParameter.Originality)}
-            label="Originality"
-            disabled={sortConfig.param === VideoSortParameter.Originality}
-          />
-          <FilterButton
-            onTap={makeFilter(VideoSortParameter.Length)}
-            label="Length"
-            disabled={sortConfig.param === VideoSortParameter.Length}
-          />
-          <FilterButton
             onTap={makeFilter(VideoSortParameter.Compliance)}
-            label="Compliance"
+            label="Compliance to Guidelines"
             disabled={sortConfig.param === VideoSortParameter.Compliance}
           />
         </scroll-view>

@@ -4,8 +4,10 @@ import {
   fetchVideoBreakdowns,
   fetchVideoBreakdown,
   generateVideoBreakdown,
+  saveVideoBreakdown,
 } from '../api/videos.js';
 import { useUser } from './auth.js';
+import type { VideoBreakdownGetData, VideoBreakdownPostData } from '../pages/VideoBreakdown/VideoBreakdown.js';
 
 // Hook to fetch all video breakdowns
 export const useVideoBreakdowns = () => {
@@ -23,6 +25,15 @@ export const useVideoBreakdown = (videoId: number) => {
     queryFn: () => fetchVideoBreakdown(videoId, user.token),
   });
 };
+
+// Hook to save a video breakdown
+export const useSaveVideoBreakdown = () => {
+  const { user } = useUser();
+  return useMutation<VideoBreakdownGetData, Error, VideoBreakdownPostData>({
+    mutationFn: (data: VideoBreakdownPostData) => saveVideoBreakdown(data, user.token),
+  })
+};
+
 
 // Hook to generate a video breakdown
 export const useGenerateVideoBreakdown = () => {
