@@ -1,19 +1,80 @@
-import { useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { useVideoBreakdown } from '../../hooks/videos.js';
 import type { VideoAnalysisMetric, VideoBreakdown } from '../../types/types.js';
 import './VideoBreakdown.css';
 import { ErrorAlert } from '../../components/ErrorAlert.js';
 import LoadingPage from '../../components/LoadingPage.js';
+import TextField from '../../components/TextField.js';
+import { useState } from 'react';
+import { Button } from '../../components/Button.js';
+
+const dummyData: VideoBreakdown = {
+  id: 1,
+  title: 'Very Interesting Video',
+  score: 94,
+  summary: 'really awesome video here',
+  videoUrl: '',
+  thumbnailUrl: 'https://picsum.photos/300/400',
+
+  // clarity: {
+  //   score: 90,
+  //   feedback:
+  //     'Concepts are explained clearly with simple examples and visual aids.',
+  // },
+  educationalValue: {
+    score: 95,
+    feedback:
+      'The video provides accurate information and adds value by connecting concepts to real-world examples.',
+  },
+  delivery: {
+    score: 85,
+    feedback:
+      'The presenter speaks confidently with good pacing, though some sections could be more dynamic.',
+  },
+  audioVisual: {
+    score: 80,
+    feedback:
+      'Audio is clear and visuals support the content, but lighting and transitions could be improved.',
+  },
+  originality: {
+    score: 88,
+    feedback:
+      'The content presents familiar topics in a unique and engaging way.',
+  },
+  length: {
+    score: 92,
+    feedback: 'The video is concise and appropriately timed for the topic.',
+  },
+  compliance: {
+    score: 100,
+    feedback: 'Content adheres to all safety and factual guidelines.',
+  },
+};
+
+interface QualityScore {
+  communityGuidelines: VideoAnalysisMetric;
+  education: VideoAnalysisMetric;
+  delivery: VideoAnalysisMetric;
+  audioVisual: VideoAnalysisMetric;
+}
 
 export default function VideoBreakdown() {
   const { videoId } = useParams();
-  const { data, isLoading, isError, error } = useVideoBreakdown(Number(videoId));
+  const location = useLocation();
+  const [title, setTitle] = useState('');
+  const { data, isLoading, isError, error } = useVideoBreakdown(
+    Number(videoId),
+  );
 
-  if (isError) {
+  const newBreakdownData: QualityScore = location.state.result;
+
+  const onTapSaveBreakdown = () => {};
+
+  if (isError && newBreakdownData === undefined) {
     return <ErrorAlert message={`Error loading video breakdown: ${error}`} />;
   }
 
-  if (isLoading || !data) {
+  if (isLoading || (!data && newBreakdownData === undefined)) {
     return <LoadingPage />;
   }
 
@@ -25,17 +86,23 @@ export default function VideoBreakdown() {
     {
       label: 'Educational Value',
       icon: '🎓',
-      metric: data.contentQuality.educationalValue,
+      metric: newBreakdownData.education,
     },
-    { label: 'Delivery', icon: '🎤', metric: data.contentQuality.delivery },
+    { label: 'Delivery', icon: '🎤', metric: newBreakdownData.delivery },
     {
       label: 'Audio/Visual',
       icon: '🎬',
-      metric: data.contentQuality.audioVisual,
+      metric: newBreakdownData.audioVisual,
     },
-    { label: 'Compliance', icon: '⚖️', metric: data.contentQuality.compliance },
-    { label: 'Length', icon: '⏱️', metric: data.contentQuality.length },
+    {
+      label: 'Community Guidelines',
+      icon: '⚖️',
+      metric: newBreakdownData.communityGuidelines,
+    },
+    // { label: 'Length', icon: '⏱️', metric: newBreakdownData.contentQuality.length },
   ];
+
+  const avgScore = metrics.reduce((a, b) => a + b.metric.score, 0) / 4;
 
   return (
     <scroll-view
@@ -43,24 +110,28 @@ export default function VideoBreakdown() {
       style={{ width: '100%', height: 'calc(100vh - 60px)' }}
     >
       <view className="video-breakdown-container">
-        <view className="thumbnail-box">
+        {/* <view className="thumbnail-box">
           <image
             mode="aspectFit"
-            src={data.thumbnailUrl}
+            src={newBreakdownData.thumbnailUrl}
             className="video-thumbnail"
           />
-        </view>
-        <text>{data.title}</text>
+        </view> */}
+        <text>{`Video URL: ${location.state.url}`}</text>
+        <TextField
+          placeholder="Video Title"
+          bindinput={(e) => setTitle(e.detail.value)}
+        />
         <view
           className="score-circle"
-          style={{ backgroundColor: scoreToColor(data.score) }}
+          style={{ backgroundColor: scoreToColor(avgScore) }}
         >
-          <text className="score-text">{data.score}%</text>
+          <text className="score-text">{avgScore.toFixed(1)}%</text>
         </view>
-        <view className="summary-box">
+        {/* <view className="summary-box">
           <text style={{ fontWeight: 'bold' }}>Analysis:</text>
-          <text>{data.summary}</text>
-        </view>
+          <text>{newBreakdownData.summary}</text>
+        </view> */}
         <view className="metrics-container">
           {metrics.map((metric) => (
             <MetricCard
@@ -71,6 +142,12 @@ export default function VideoBreakdown() {
             />
           ))}
         </view>
+        <Button
+          label="Save"
+          onTap={onTapSaveBreakdown}
+          fullWidth
+          disabled={title === ''}
+        />
       </view>
     </scroll-view>
   );
@@ -121,46 +198,3 @@ function MetricCard({ label, metric, icon }: MetricCardProps) {
     </view>
   );
 }
-
-// const dummyData: VideoBreakdown = {
-//   id: 1,
-//   title: 'Very Interesting Video',
-//   score: 94,
-//   summary: 'really awesome video here',
-//   videoUrl: '',
-//   thumbnailUrl: 'https://picsum.photos/300/400',
-
-//   clarity: {
-//     score: 90,
-//     feedback:
-//       'Concepts are explained clearly with simple examples and visual aids.',
-//   },
-//   educationalValue: {
-//     score: 95,
-//     feedback:
-//       'The video provides accurate information and adds value by connecting concepts to real-world examples.',
-//   },
-//   delivery: {
-//     score: 85,
-//     feedback:
-//       'The presenter speaks confidently with good pacing, though some sections could be more dynamic.',
-//   },
-//   audioVisual: {
-//     score: 80,
-//     feedback:
-//       'Audio is clear and visuals support the content, but lighting and transitions could be improved.',
-//   },
-//   originality: {
-//     score: 88,
-//     feedback:
-//       'The content presents familiar topics in a unique and engaging way.',
-//   },
-//   length: {
-//     score: 92,
-//     feedback: 'The video is concise and appropriately timed for the topic.',
-//   },
-//   compliance: {
-//     score: 100,
-//     feedback: 'Content adheres to all safety and factual guidelines.',
-//   },
-// };
