@@ -1,7 +1,7 @@
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { Home } from './pages/Home/Home.js';
 import VideoList from './pages/VideoList/VideoList.js';
-import VideoScore from './pages/VideoScore/VideoScore.js';
+import VideoBreakdown from './pages/VideoBreakdown/VideoBreakdown.js';
 import RootLayout from './pages/RootLayout.js';
 
 export default function Router() {
@@ -11,7 +11,7 @@ export default function Router() {
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />
           <Route path="/videos" element={<VideoList />} />
-          <Route path="/videos/:video_id" element={<VideoScore />} />
+          <Route path="/videos/:videoId" element={<VideoBreakdown />} />
         </Route>
       </Routes>
     </MemoryRouter>
