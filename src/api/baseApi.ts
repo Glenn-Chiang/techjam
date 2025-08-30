@@ -1,6 +1,6 @@
 // Modify according to the local IP address of the computer
 export const BASE_URL = 'http://192.168.43.52:3001/api';
-export const BASE_ML_URL = 'http://192.168.43.52:8000';
+export const BASE_ML_URL = 'http://192.168.43.52:8001';
 
 
 export const apiFetch = async (endpoint: string, options: RequestInit = {}, token?: string) => {
