@@ -24,13 +24,12 @@ export const fetchVideoBreakdown = async (
 };
 
 export const generateVideoBreakdown = async (
-  video: File,
+  videoUrl: string,
 ): Promise<VideoBreakdown> => {
-  const formData = new FormData();
-  formData.append('video', video);
   const response = await apiFetch('/content', {
     method: 'POST',
-    body: formData,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ videoUrl }),
   });
   if (!response.ok) {
     throw new Error('Failed to generate breakdown');
@@ -57,7 +56,7 @@ export const fetchConsumerVideos = async (
   const stubMetric = () => ({
     score: Math.random() * 100,
     feedback: 'feedback',
-  })
+  });
 
   return Array.from({ length: 20 }, (_, i) => ({
     id: `${i + 1}`,

@@ -26,8 +26,8 @@ export const useVideoBreakdown = (videoId: number) => {
 export const useGenerateVideoBreakdown = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<VideoBreakdown, Error, File>({
-    mutationFn: (video: File) => generateVideoBreakdown(video),
+  return useMutation<VideoBreakdown, Error, string>({
+    mutationFn: (videoUrl: string) => generateVideoBreakdown(videoUrl),
     onSuccess: () => {
       // Refetch video breakdowns
       queryClient.invalidateQueries({ queryKey: ['videoBreakdowns'] });
