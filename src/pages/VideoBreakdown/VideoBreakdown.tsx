@@ -11,6 +11,7 @@ import TextField from '../../components/TextField.js';
 import { useState } from 'react';
 import { Button } from '../../components/Button.js';
 import { useUser } from '../../hooks/auth.js';
+import Link from '../../components/Link.js';
 
 interface QualityScore {
   communityGuidelines: VideoAnalysisMetric;
@@ -119,11 +120,20 @@ export default function VideoBreakdown() {
             className="video-thumbnail"
           />
         </view> */}
-        <text>{`Video URL: ${location.state.url}`}</text>
-        <TextField
-          placeholder="Video Title"
-          bindinput={(e) => setTitle(e.detail.value)}
-        />
+        <view
+          style={{
+            display: 'flex',
+            gap: 4,
+            fontSize: 'var(--large-text-size)',
+            paddingTop: 8,
+          }}
+        >
+          <text>{'Analysis generated for '}</text>
+          <Link bindtap={() => {
+            window.open(location.state.url)
+          }}>{'your video'}</Link>
+          <text>{'!'}</text>
+        </view>
         <view
           className="score-circle"
           style={{ backgroundColor: scoreToColor(avgScore) }}
@@ -144,6 +154,11 @@ export default function VideoBreakdown() {
             />
           ))}
         </view>
+        <text>{'Enter a title to save this analysis:'}</text>
+        <TextField
+          placeholder="Video Title"
+          bindinput={(e) => setTitle(e.detail.value)}
+        />
         <Button
           label="Save"
           onTap={onTapSaveBreakdown}
