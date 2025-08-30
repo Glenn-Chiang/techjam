@@ -32,7 +32,10 @@ export default function VideoBreakdown() {
           />
         </view>
         <text>{data.title}</text>
-        <view className="score-circle">
+        <view
+          className="score-circle"
+          style={{ backgroundColor: scoreToColor(data.score) }}
+        >
           <text className="score-text">{data.score}%</text>
         </view>
         <view className="summary-box">
@@ -53,6 +56,15 @@ export default function VideoBreakdown() {
   );
 }
 
+function scoreToColor(score: number) {
+  // Determine bar color based on score
+  let color = '#4caf50'; // green
+  if (score < 50)
+    color = '#f44336'; // red
+  else if (score < 75) color = '#ff9800'; // orange
+  return color;
+}
+
 interface MetricCardProps {
   label: string;
   metric: VideoAnalysisMetric;
@@ -62,7 +74,26 @@ function MetricCard({ label, metric }: MetricCardProps) {
   return (
     <view className="metric-card">
       <text className="metric-label">{label}</text>
-      <text className="metric-score">{metric.score}%</text>
+      <view
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+        }}
+      >
+        <view className="score-bar-container">
+          <view
+            className="score-bar-fill"
+            style={{
+              width: `${metric.score}%`,
+              backgroundColor: scoreToColor(metric.score),
+            }}
+          />
+        </view>
+        <text className="score-text-right">{metric.score}%</text>
+      </view>
+
       <text>{metric.feedback}</text>
     </view>
   );
