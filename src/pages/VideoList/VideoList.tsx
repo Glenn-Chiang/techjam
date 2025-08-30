@@ -8,6 +8,7 @@ import { useCallback } from 'react';
 import { useUser } from '../../hooks/auth.js';
 import SimplePage from '../../components/SimplePage.js';
 import type { VideoBreakdownGetData } from '../VideoBreakdown/VideoBreakdown.js';
+import LoadingPage from '../../components/LoadingPage.js';
 
 enum VideoSortParameter {
   QualityScore,
@@ -64,14 +65,16 @@ export default function VideoList() {
   const { user } = useUser();
   const [videos, setVideos] = useState<VideoBreakdownGetData[]>([]);
   const [screenWidth, setScreenWidth] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<VideoSortConfig>({
     param: VideoSortParameter.QualityScore,
     order: SortOrder.Desc,
   });
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchVideos = async () =>
-      setVideos(await fetchVideoBreakdowns(user.token));
+      setVideos(await (fetchVideoBreakdowns(user.token).finally(() => setIsLoading(false))));
     fetchVideos();
   }, [user.token]);
 
@@ -142,6 +145,10 @@ export default function VideoList() {
     arr.sort(videoSorter(sortConfig));
     return arr;
   }, [videos, videoSorter, sortConfig]);
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
 
   if (user.id === '') {
     return (
