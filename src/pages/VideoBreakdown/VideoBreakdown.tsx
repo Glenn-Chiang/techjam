@@ -54,7 +54,7 @@ export default function VideoBreakdown() {
   );
 
   const newBreakdownData: QualityScore = location.state.result;
-  const { mutate } = useSaveVideoBreakdown();
+  const { mutate, isPending } = useSaveVideoBreakdown();
   const { user } = useUser();
 
   const onTapSaveBreakdown = () => {
@@ -155,7 +155,7 @@ export default function VideoBreakdown() {
           label="Save"
           onTap={onTapSaveBreakdown}
           fullWidth
-          disabled={title === ''}
+          disabled={title === '' || isPending}
         />
       </view>
     </scroll-view>
