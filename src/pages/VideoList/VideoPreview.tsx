@@ -11,6 +11,19 @@ export interface VideoPreviewData {
   qualityScore: number;
   createdDate: Date;
   width?: number;
+
+  clarity: VideoAnalysisMetric;
+  educationalValue: VideoAnalysisMetric;
+  delivery: VideoAnalysisMetric;
+  audioVisual: VideoAnalysisMetric;
+  originality: VideoAnalysisMetric;
+  length: VideoAnalysisMetric;
+  compliance: VideoAnalysisMetric;
+}
+
+interface VideoAnalysisMetric {
+  score: number;
+  feedback: string;
 }
 
 interface VideoPreviewProps {
