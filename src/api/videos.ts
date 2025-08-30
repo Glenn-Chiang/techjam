@@ -1,10 +1,11 @@
+import type { VideoBreakdownGetData, VideoBreakdownPostData } from '../pages/VideoBreakdown/VideoBreakdown.js';
 import type { VideoPreviewData } from '../pages/VideoList/VideoPreview.js';
 import type { VideoBreakdown } from '../types/types.js';
 import { apiFetch, apiFetchML } from './baseApi.js';
 
 /* Video Breakdown API */
-export const fetchVideoBreakdowns = async (): Promise<VideoBreakdown[]> => {
-  const response = await apiFetch('/content');
+export const fetchVideoBreakdowns = async (token: string): Promise<VideoBreakdownGetData[]> => {
+  const response = await apiFetch('/content', {}, token);
   if (!response.ok) {
     throw new Error('Failed to fetch video breakdowns');
   }
@@ -24,6 +25,27 @@ export const fetchVideoBreakdown = async (
   return data;
 };
 
+export const saveVideoBreakdown = async (
+  data: VideoBreakdownPostData,
+  token: string,
+): Promise<VideoBreakdownGetData> => {
+  const response = await apiFetch(
+    `/content`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    },
+    token,
+  );
+  if (!response.ok) {
+    throw new Error(`Failed to save video breakdown`);
+  }
+
+  const respData = await response.json();
+  return respData;
+};
+
 export const generateVideoBreakdown = async (
   videoUrl: string,
 ): Promise<VideoBreakdown> => {
@@ -32,11 +54,7 @@ export const generateVideoBreakdown = async (
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url: videoUrl }),
   });
-
-  // if (!response.ok) {
-  //   throw new Error('Failed to generate breakdown');
-  // }
-
+  
   return response;
 };
 
