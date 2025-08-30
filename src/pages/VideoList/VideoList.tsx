@@ -241,7 +241,7 @@ export default function VideoList() {
           borderRadius: '4px',
         }}
       >
-        {videos.map((v) => (
+        {sortedVideos.map((v) => (
           <VideoPreview
             key={v.id}
             video={v}
