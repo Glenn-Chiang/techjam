@@ -3,26 +3,26 @@ import './Home.css';
 import { Button } from '../../components/Button.js';
 import { useNavigate } from 'react-router';
 import { Spinner } from '../../components/Spinner.js';
-
-type AppState = 'default' | 'uploaded' | 'analysing';
+import { useGenerateVideoBreakdown } from '../../hooks/videos.js';
+import { ErrorAlert } from '../../components/ErrorAlert.js';
 
 export function Home() {
-  const [appState, setAppState] = useState<AppState>('default');
+  const [inputContent, setInputContent] = useState('');
 
-  const onTapUpload = () => {
-    // TODO: Actually upload
-    setAppState('uploaded');
+  const handleInput = (e: any) => {
+    setInputContent(e.detail.value);
   };
 
   const navigate = useNavigate();
+  const { mutate, isPending, isError } = useGenerateVideoBreakdown();
 
   const onTapAnalyse = () => {
-    setAppState('analysing');
-    // TODO: Call endpoint to analyse
-    const videoId = 1; // Endpoint should return data containing id of newly analysed video
-    setTimeout(() => {
-      navigate(`/videos/${videoId}`);
-    }, 3000);
+    mutate(inputContent, {
+      // Redirect to video breakdown page
+      onSuccess: (res) => {
+        navigate(`/videos/p/${res.id}`);
+      },
+    });
   };
 
   return (
@@ -36,17 +36,21 @@ export function Home() {
           gap: 8,
         }}
       >
-        {appState !== 'analysing' && (
-          <Button
-            label={appState === 'uploaded' ? 'Change Video' : 'Choose Video'}
-            onTap={onTapUpload}
-          />
+        {!isPending && (
+          <>
+            <input
+              className="url-input"
+              placeholder="Enter video url"
+              bindinput={handleInput}
+            />
+            <Button
+              label="Analyse"
+              onTap={onTapAnalyse}
+              disabled={!inputContent}
+            />
+          </>
         )}
-        {appState !== 'default' && <VideoView />}
-        {appState === 'uploaded' && (
-          <Button label="Analyse" onTap={onTapAnalyse} />
-        )}
-        {appState === 'analysing' && (
+        {isPending && (
           <view
             style={{
               display: 'flex',
@@ -55,19 +59,12 @@ export function Home() {
               gap: 8,
             }}
           >
-            <text style={{textAlign: 'center'}}>Analysing...</text>
+            <text style={{ textAlign: 'center' }}>Analysing...</text>
             <Spinner />
           </view>
         )}
+        {isError && <ErrorAlert message="Error analysing video" />}
       </view>
-    </view>
-  );
-}
-
-function VideoView() {
-  return (
-    <view>
-      <text>{'(Video here)'}</text>
     </view>
   );
 }
