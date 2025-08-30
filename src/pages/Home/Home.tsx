@@ -22,7 +22,7 @@ export function Home() {
     const videoId = 1; // Endpoint should return data containing id of newly analysed video
     setTimeout(() => {
       navigate(`/videos/p/${videoId}`);
-    }, 3000);
+    }, 1000);
   };
 
   return (

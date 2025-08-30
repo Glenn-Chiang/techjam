@@ -3,5 +3,6 @@ export interface VideoBreakdown {
   title: string;
   score: number;
   summary: string;
+  thumbnailUrl: string;
   videoUrl: string;
 }
