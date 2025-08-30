@@ -6,9 +6,10 @@ interface ButtonProps {
   label: string;
   disabled?: boolean;
   style?: CSSProperties;
+  textStyle?: CSSProperties;
 }
 
-export function Button({ onTap, label, disabled, style }: ButtonProps) {
+export function Button({ onTap, label, disabled, style, textStyle }: ButtonProps) {
   const handleTap = () => {
     if (!disabled) {
       onTap();
@@ -20,7 +21,7 @@ export function Button({ onTap, label, disabled, style }: ButtonProps) {
       className={`button ${disabled && 'button-disabled'}`}
       bindtap={handleTap}
     >
-      <text>{label}</text>
+      <text style={textStyle}>{label}</text>
     </view>
   );
 }

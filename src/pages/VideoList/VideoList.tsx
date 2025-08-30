@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import VideoPreview, { type VideoPreviewData } from './VideoPreview.js';
 import { fetchConsumerVideos } from '../../api/videos.js';
 import { Button } from '../../components/Button.js';
+import './VideoList.css';
+import { useMemo } from 'react';
+import { useCallback } from 'react';
 
 enum VideoSortParameter {
   QualityScore,
@@ -26,6 +29,27 @@ type VideoSortConfig = {
   order: SortOrder;
 };
 
+function FilterButton({ onTap, label, disabled }: { onTap: () => void; label: string; disabled?: boolean }) {
+  return (
+    <Button
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: '2px',
+        flexShrink: 0,
+        padding: '12px 16px !important',
+      }}
+      textStyle={{
+        fontSize: '1em',
+      }}
+      onTap={onTap}
+      label={label}
+      disabled={disabled}
+    />
+  );
+}
+
 export default function VideoList() {
   const [videos, setVideos] = useState<VideoPreviewData[]>([]);
   const [screenWidth, setScreenWidth] = useState(0);
@@ -45,28 +69,96 @@ export default function VideoList() {
       param,
     }));
 
+  const compareVideo = (a: number, b: number, order: SortOrder) =>
+    order === SortOrder.Asc ? a - b : b - a;
+
+  const videoSorter =
+    useCallback((s: VideoSortConfig) => (a: VideoPreviewData, b: VideoPreviewData) => {
+      switch (s.param) {
+        case VideoSortParameter.QualityScore:
+          return compareVideo(a.qualityScore, b.qualityScore, s.order);
+
+        case VideoSortParameter.ViewCount:
+          return compareVideo(a.viewCount, b.viewCount, s.order);
+
+        case VideoSortParameter.CreatedDate:
+          return compareVideo(
+            new Date(a.createdDate).getTime(),
+            new Date(b.createdDate).getTime(),
+            s.order,
+          );
+
+        case VideoSortParameter.Clarity:
+          return compareVideo(a.clarity.score, b.clarity.score, s.order);
+
+        case VideoSortParameter.EduValue:
+          return compareVideo(
+            a.educationalValue.score,
+            b.educationalValue.score,
+            s.order,
+          );
+
+        case VideoSortParameter.Delivery:
+          return compareVideo(a.delivery.score, b.delivery.score, s.order);
+
+        case VideoSortParameter.AudioVisual:
+          return compareVideo(
+            a.audioVisual.score,
+            b.audioVisual.score,
+            s.order,
+          );
+
+        case VideoSortParameter.Originality:
+          return compareVideo(
+            a.originality.score,
+            b.originality.score,
+            s.order,
+          );
+
+        case VideoSortParameter.Length:
+          return compareVideo(a.length.score, b.length.score, s.order);
+
+        case VideoSortParameter.Compliance:
+          return compareVideo(a.compliance.score, b.compliance.score, s.order);
+
+        default:
+          return 0;
+      }
+    }, []);
+
+  const sortedVideos = useMemo(() => {
+    const arr = [...videos];
+    arr.sort(videoSorter(sortConfig));
+    return arr;
+  }, [videos, videoSorter, sortConfig]);
+
   return (
     <scroll-view
       scroll-orientation="vertical"
-      style={{ flex: 1, width: '100%', height: 'calc(100% - 60px)' }}
+      style={{
+        flex: 1,
+        width: '100%',
+        height: 'calc(100% - 84px)',
+        marginTop: '24px',
+        padding: '2px',
+      }}
       bindlayoutchange={(e) => setScreenWidth(e.detail.width)}
     >
-      {/* <scroll-view
-        scroll-orientation="horizontal"
-        flatten={true} // Android requirement
+      <text className="sort-section-label" style={{ fontSize: '0.95em' }}>
+        Sort Videos
+      </text>
+      <view
         style={{
           display: 'flex',
-          padding: '2px',
-          gap: '2px',
+          width: '100%',
+          borderRadius: '4px',
+          backgroundColor: 'white',
           position: 'sticky',
           top: '0px',
+          marginBottom: '8px',
         }}
       >
-        <Button
-          style={{
-            position: 'sticky',
-            left: '0px',
-          }}
+        <FilterButton
           onTap={() =>
             setSortConfig((conf) => ({
               ...conf,
@@ -74,34 +166,55 @@ export default function VideoList() {
                 conf.order === SortOrder.Asc ? SortOrder.Desc : SortOrder.Asc,
             }))
           }
-          label={'↕'}
+          label={sortConfig.order === SortOrder.Asc ? 'Asc' : 'Desc'}
         />
-        <Button
-          onTap={makeFilter(VideoSortParameter.Clarity)}
-          label="Clarity"
-        />
-        <Button
-          onTap={makeFilter(VideoSortParameter.EduValue)}
-          label="Edu Value"
-        />
-        <Button
-          onTap={makeFilter(VideoSortParameter.Delivery)}
-          label="Delivery"
-        />
-        <Button
-          onTap={makeFilter(VideoSortParameter.AudioVisual)}
-          label="Audio Visual"
-        />
-        <Button
-          onTap={makeFilter(VideoSortParameter.Originality)}
-          label="Originality"
-        />
-        <Button onTap={makeFilter(VideoSortParameter.Length)} label="Length" />
-        <Button
-          onTap={makeFilter(VideoSortParameter.Compliance)}
-          label="Compliance"
-        />
-      </scroll-view> */}
+        <scroll-view
+          scroll-orientation="horizontal"
+          flatten={true} // Android requirement
+          style={{
+            backgroundColor: 'white',
+            display: 'flex',
+            gap: '20px',
+            height: '100%',
+          }}
+        >
+          <FilterButton
+            onTap={makeFilter(VideoSortParameter.Clarity)}
+            label="Clarity"
+            disabled={sortConfig.param === VideoSortParameter.Clarity}
+          />
+          <FilterButton
+            onTap={makeFilter(VideoSortParameter.EduValue)}
+            label="Edu Value"
+            disabled={sortConfig.param === VideoSortParameter.EduValue}
+          />
+          <FilterButton
+            onTap={makeFilter(VideoSortParameter.Delivery)}
+            label="Delivery"
+            disabled={sortConfig.param === VideoSortParameter.Delivery}
+          />
+          <FilterButton
+            onTap={makeFilter(VideoSortParameter.AudioVisual)}
+            label="Audio Visual"
+            disabled={sortConfig.param === VideoSortParameter.AudioVisual}
+          />
+          <FilterButton
+            onTap={makeFilter(VideoSortParameter.Originality)}
+            label="Originality"
+            disabled={sortConfig.param === VideoSortParameter.Originality}
+          />
+          <FilterButton
+            onTap={makeFilter(VideoSortParameter.Length)}
+            label="Length"
+            disabled={sortConfig.param === VideoSortParameter.Length}
+          />
+          <FilterButton
+            onTap={makeFilter(VideoSortParameter.Compliance)}
+            label="Compliance"
+            disabled={sortConfig.param === VideoSortParameter.Compliance}
+          />
+        </scroll-view>
+      </view>
       <view
         style={{
           display: 'grid',
@@ -109,13 +222,12 @@ export default function VideoList() {
           rowGap: '2px',
           columnGap: '2px',
           width: '100%',
-          height: '100%',
-          padding: '2px',
+          borderRadius: '4px',
         }}
       >
-        {videos.map((v, i) => (
+        {sortedVideos.map((v) => (
           <VideoPreview
-            key={i}
+            key={v.id}
             video={v}
             width={(1 / 3) * screenWidth - 8 / 3}
           />

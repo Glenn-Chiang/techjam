@@ -54,10 +54,10 @@ export const fetchConsumerVideos = async (
     );
   }
 
-  const stubMetric = {
-    score: 50,
+  const stubMetric = () => ({
+    score: Math.random() * 100,
     feedback: 'feedback',
-  }
+  })
 
   return Array.from({ length: 20 }, (_, i) => ({
     id: `${i + 1}`,
@@ -65,12 +65,12 @@ export const fetchConsumerVideos = async (
     viewCount: Math.floor(Math.random() * 100000), // random views
     qualityScore: Math.random() * 100,
     createdDate: randomDate(new Date('2025-01-01'), new Date()), // random date between Jan 1 2025 and now
-    clarity: stubMetric,
-    educationalValue: stubMetric,
-    delivery: stubMetric,
-    audioVisual: stubMetric,
-    originality: stubMetric,
-    length: stubMetric,
-    compliance: stubMetric,
+    clarity: stubMetric(),
+    educationalValue: stubMetric(),
+    delivery: stubMetric(),
+    audioVisual: stubMetric(),
+    originality: stubMetric(),
+    length: stubMetric(),
+    compliance: stubMetric(),
   }));
 };
