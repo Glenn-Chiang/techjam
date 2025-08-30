@@ -11,6 +11,7 @@ import TextField from '../../components/TextField.js';
 import { useState } from 'react';
 import { Button } from '../../components/Button.js';
 import { useUser } from '../../hooks/auth.js';
+import Link from '../../components/Link.js';
 
 interface QualityScore {
   communityGuidelines: VideoAnalysisMetric;
@@ -53,7 +54,7 @@ export default function VideoBreakdown() {
   );
 
   const newBreakdownData: QualityScore = location.state.result;
-  const { mutate } = useSaveVideoBreakdown();
+  const { mutate, isPending } = useSaveVideoBreakdown();
   const { user } = useUser();
 
   const onTapSaveBreakdown = () => {
@@ -119,11 +120,12 @@ export default function VideoBreakdown() {
             className="video-thumbnail"
           />
         </view> */}
-        <text>{`Video URL: ${location.state.url}`}</text>
-        <TextField
-          placeholder="Video Title"
-          bindinput={(e) => setTitle(e.detail.value)}
-        />
+
+        <text>{'Analysis generated for your video!'}</text>
+        <view className='url-container'>
+          <text>{location.state.url}</text>
+        </view>
+
         <view
           className="score-circle"
           style={{ backgroundColor: scoreToColor(avgScore) }}
@@ -144,11 +146,16 @@ export default function VideoBreakdown() {
             />
           ))}
         </view>
+        <text>{'Enter a title to save this analysis:'}</text>
+        <TextField
+          placeholder="Video Title"
+          bindinput={(e) => setTitle(e.detail.value)}
+        />
         <Button
           label="Save"
           onTap={onTapSaveBreakdown}
           fullWidth
-          disabled={title === ''}
+          disabled={title === '' || isPending}
         />
       </view>
     </scroll-view>

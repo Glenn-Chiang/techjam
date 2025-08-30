@@ -45,6 +45,12 @@
   width: 100%;
 }
 
+.url-container {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
 .metrics-container {
   display: flex;
   flex-direction: column;
