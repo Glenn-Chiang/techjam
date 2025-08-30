@@ -1,6 +1,6 @@
 import { getToken } from "./auth.js";
 
-export const BASE_URL = 'https://api.example.com';
+export const BASE_URL = 'https://localhost:3001';
 
 export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
   const token = getToken();
