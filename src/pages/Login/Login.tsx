@@ -33,6 +33,13 @@ export default function Login() {
           mutate({ email, password }, { onSuccess: () => route('/') })
         }
       />
+      {/* Create an account with the credential below for fast login for development purposes. */}
+      <Button
+        label="Test Login"
+        onTap={() =>
+          mutate({ email: 'user@example.com', password: 'password' }, { onSuccess: () => route('/') })
+        }
+      />
       <view style={{ marginTop: '24px' }}>
         <text>Don't have an account?</text>
         <Link bindtap={() => route('/signup')}>Sign Up</Link>

@@ -5,6 +5,8 @@ import { Button } from '../../components/Button.js';
 import './VideoList.css';
 import { useMemo } from 'react';
 import { useCallback } from 'react';
+import { useUser } from '../../hooks/auth.js';
+import SimplePage from '../../components/SimplePage.js';
 
 enum VideoSortParameter {
   QualityScore,
@@ -51,6 +53,7 @@ function FilterButton({ onTap, label, disabled }: { onTap: () => void; label: st
 }
 
 export default function VideoList() {
+  const { user } = useUser();
   const [videos, setVideos] = useState<VideoPreviewData[]>([]);
   const [screenWidth, setScreenWidth] = useState(0);
   const [sortConfig, setSortConfig] = useState<VideoSortConfig>({
@@ -131,6 +134,10 @@ export default function VideoList() {
     arr.sort(videoSorter(sortConfig));
     return arr;
   }, [videos, videoSorter, sortConfig]);
+
+  if (user.id === '') {
+    return <SimplePage><text>Please login to view your analysed videos.</text></SimplePage>
+  }
 
   return (
     <scroll-view
