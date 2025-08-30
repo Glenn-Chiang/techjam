@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import VideoListApi from './VideoListApi.js';
-import Video, { type VideoProps } from './Video.js';
+import VideoPreview, { type VideoPreviewData } from './VideoPreview.js';
+import { fetchConsumerVideos } from '../../api/videos.js';
 
 export default function VideoList() {
-  const [videos, setVideos] = useState<VideoProps[]>([]);
+  const [videos, setVideos] = useState<VideoPreviewData[]>([]);
   const [screenWidth, setScreenWidth] = useState(0);
 
   useEffect(() => {
-    const fetchVideos = async () => setVideos(await VideoListApi.getVideos());
+    const fetchVideos = async () => setVideos(await fetchConsumerVideos(false));
     fetchVideos();
   }, []);
 
@@ -21,19 +21,17 @@ export default function VideoList() {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          // rowGap: '2px',
-          // columnGap: '2px',
-          width: 'fit-content',
+          rowGap: '2px',
+          columnGap: '2px',
+          width: '100%',
+          padding: '2px',
         }}
       >
         {videos.map((v, i) => (
-          <Video
+          <VideoPreview
             key={i}
-            id={v.id}
-            title={v.title}
-            viewCount={v.viewCount}
-            uploadDate={v.uploadDate}
-            width={(1 / 3) * screenWidth}
+            video={v}
+            width={(1 / 3) * screenWidth - 8 / 3}
           />
         ))}
       </view>
