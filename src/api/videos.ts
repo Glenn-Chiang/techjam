@@ -1,6 +1,6 @@
 import type { VideoPreviewData } from '../pages/VideoList/VideoPreview.js';
 import type { VideoBreakdown } from '../types/types.js';
-import { apiFetch } from './baseApi.js';
+import { apiFetch, apiFetchML } from './baseApi.js';
 
 /* Video Breakdown API */
 export const fetchVideoBreakdowns = async (): Promise<VideoBreakdown[]> => {
@@ -26,13 +26,12 @@ export const fetchVideoBreakdown = async (
 
 export const generateVideoBreakdown = async (
   videoUrl: string,
-  token: string,
 ): Promise<VideoBreakdown> => {
-  const response = await apiFetch('/content', {
+  const response = await apiFetchML('/content/quality-score', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ videoUrl }),
-  }, token);
+    body: JSON.stringify({ url: videoUrl }),
+  });
   if (!response.ok) {
     throw new Error('Failed to generate breakdown');
   }

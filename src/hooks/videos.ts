@@ -30,7 +30,7 @@ export const useGenerateVideoBreakdown = () => {
   const { user } = useUser();
   return useMutation<VideoBreakdown, Error, string>({
     mutationFn: (videoUrl: string) =>
-      generateVideoBreakdown(videoUrl, user.token),
+      generateVideoBreakdown(videoUrl),
     onSuccess: () => {
       // Refetch video breakdowns
       queryClient.invalidateQueries({ queryKey: ['videoBreakdowns'] });
