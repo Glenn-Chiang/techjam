@@ -8,14 +8,18 @@ export default function VideoBreakdown() {
   // const { data, isLoading, error } = useVideoBreakdown(Number(videoId));
   const data = dummyData;
 
-  const metrics: { label: string; metric: VideoAnalysisMetric }[] = [
-    { label: 'Clarity', metric: data.clarity },
-    { label: 'Educational Value', metric: data.educationalValue },
-    { label: 'Delivery', metric: data.delivery },
-    { label: 'Audio/Visual', metric: data.audioVisual },
-    { label: 'Originality', metric: data.originality },
-    { label: 'Length', metric: data.length },
-    { label: 'Compliance', metric: data.compliance },
+  const metrics: {
+    label: string;
+    icon: string;
+    metric: VideoAnalysisMetric;
+  }[] = [
+    { label: 'Clarity', icon: '🔍', metric: data.clarity },
+    { label: 'Educational Value', icon: '🎓', metric: data.educationalValue },
+    { label: 'Delivery', icon: '🎤', metric: data.delivery },
+    { label: 'Audio/Visual', icon: '🎬', metric: data.audioVisual },
+    { label: 'Originality', icon: '💡', metric: data.originality },
+    { label: 'Length', icon: '⏱️', metric: data.length },
+    { label: 'Compliance', icon: '⚖️', metric: data.compliance },
   ];
 
   return (
@@ -48,6 +52,7 @@ export default function VideoBreakdown() {
               key={metric.label}
               label={metric.label}
               metric={metric.metric}
+              icon={metric.icon}
             />
           ))}
         </view>
@@ -67,13 +72,16 @@ function scoreToColor(score: number) {
 
 interface MetricCardProps {
   label: string;
+  icon: string;
   metric: VideoAnalysisMetric;
 }
 
-function MetricCard({ label, metric }: MetricCardProps) {
+function MetricCard({ label, metric, icon }: MetricCardProps) {
   return (
     <view className="metric-card">
-      <text className="metric-label">{label}</text>
+      <text className="metric-label">
+        {icon} {label}
+      </text>
       <view
         style={{
           display: 'flex',
