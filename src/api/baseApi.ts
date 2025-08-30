@@ -1,6 +1,7 @@
 import { getToken } from "./auth.js";
 
-export const BASE_URL = 'https://localhost:3001';
+// Modify according to the local IP address of the computer
+export const BASE_URL = 'http://192.168.43.52:3001/api';
 
 export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
   const token = getToken();

@@ -1,9 +1,11 @@
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { Home } from './pages/Home/Home.js';
 import VideoList from './pages/VideoList/VideoList.js';
 import VideoBreakdown from './pages/VideoBreakdown/VideoBreakdown.js';
 import RootLayout from './pages/RootLayout.js';
 import VideoView from './pages/VideoView/VideoView.js';
+import Login from './pages/Login/Login.js';
+import { Home } from './pages/Home/Home.js';
+import Signup from './pages/Signup/Signup.js';
 
 export default function Router() {
   return (
@@ -16,6 +18,8 @@ export default function Router() {
           {/* /c indicates consumer (viewer) view */}
           <Route path="/videos/p/:video_id" element={<VideoBreakdown />} />
           <Route path="/videos/c/:video_id" element={<VideoView />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Route>
       </Routes>
     </MemoryRouter>

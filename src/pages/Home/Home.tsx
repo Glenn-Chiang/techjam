@@ -1,20 +1,23 @@
-import { useState } from 'react';
+import { useState, type SetStateAction } from 'react';
 import './Home.css';
 import { Button } from '../../components/Button.js';
 import { useNavigate } from 'react-router';
 import { Spinner } from '../../components/Spinner.js';
 import { useGenerateVideoBreakdown } from '../../hooks/videos.js';
 import { ErrorAlert } from '../../components/ErrorAlert.js';
+import { useUser } from '../../hooks/auth.js';
+import Login from '../Login/Login.js';
 
 export function Home() {
   const [inputContent, setInputContent] = useState('');
-
-  const handleInput = (e: any) => {
+  const { user } = useUser();
+  const handleInput = (e: { detail: { value: SetStateAction<string> } }) => {
     setInputContent(e.detail.value);
   };
 
   const navigate = useNavigate();
   const { mutate, isPending, isError } = useGenerateVideoBreakdown();
+  // const apiFetch = useApiFetch();
 
   const onTapAnalyse = () => {
     mutate(inputContent, {
@@ -24,6 +27,11 @@ export function Home() {
       },
     });
   };
+
+  if (user.id === '') {
+    navigate('/login');
+    return <Login />;
+  }
 
   return (
     <view className="home-page">
@@ -50,6 +58,17 @@ export function Home() {
             />
           </>
         )}
+        {/* <Button
+          label="Auth"
+          onTap={() =>
+            apiFetch(`/content`)
+              .then((res) => setTokenOk(true))
+              .catch(() => setTokenOk(false))
+          }
+        />
+        {tokenOk && <text>Token OK</text>}
+        {!tokenOk && <text>Token FAIL</text>}
+        {<text>{`Token: ${user.token}`}</text>} */}
         {isPending && (
           <view
             style={{
