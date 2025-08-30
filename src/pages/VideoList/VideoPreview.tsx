@@ -1,14 +1,33 @@
-import VideoListApi from './VideoListApi.js';
-import './Video.css';
+import './VideoPreview.css';
 import { useNavigate } from 'react-router';
 import type React from 'react';
 import type { PropsWithChildren } from 'react';
+import VideoListApi from './VideoListApi.js';
 
-export interface VideoProps {
-  id: number;
+export interface VideoPreviewData {
+  id: string;
   title: string;
   viewCount: number;
-  uploadDate: Date;
+  qualityScore: number;
+  createdDate: Date;
+  width?: number;
+
+  clarity: VideoAnalysisMetric;
+  educationalValue: VideoAnalysisMetric;
+  delivery: VideoAnalysisMetric;
+  audioVisual: VideoAnalysisMetric;
+  originality: VideoAnalysisMetric;
+  length: VideoAnalysisMetric;
+  compliance: VideoAnalysisMetric;
+}
+
+interface VideoAnalysisMetric {
+  score: number;
+  feedback: string;
+}
+
+interface VideoPreviewProps {
+  video: VideoPreviewData,
   width?: number;
 }
 
@@ -45,7 +64,7 @@ const processRelativeUploadDate = (date: Date) => {
 };
 
 const VideoPreviewText: React.FC<{ text: string }> = ({ text }) => (
-  <text style={{ color: 'white' }}>
+  <text style={{ color: 'white', fontSize: '0.9em' }}>
     {text}
     <inline-truncation>
       <text>...</text>
@@ -65,7 +84,9 @@ const VideoPreviewOverlayTop: React.FC<PropsWithChildren> = ({ children }) => (
   </view>
 );
 
-const VideoPreviewOverlayBottom: React.FC<PropsWithChildren> = ({ children }) => (
+const VideoPreviewOverlayBottom: React.FC<PropsWithChildren> = ({
+  children,
+}) => (
   <view
     style={{
       position: 'absolute',
@@ -86,6 +107,7 @@ const VideoPreviewGradientTop: React.FC = () => (
       width: '100%',
       height: '50px',
       background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0))',
+      borderRadius: '4px',
     }}
   />
 );
@@ -99,6 +121,7 @@ const VideoPreviewGradientBottom: React.FC = () => (
       width: '100%',
       height: '50px',
       background: 'linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0))',
+      borderRadius: '4px',
     }}
   />
 );
@@ -120,28 +143,26 @@ const VideoPreviewPlayIconOverlay: React.FC = () => (
   </view>
 );
 
-export default function Video({
-  id,
-  title,
-  viewCount,
-  uploadDate,
-  width,
-}: VideoProps) {
+export default function VideoPreview({
+  video,
+  width
+}: VideoPreviewProps) {
   const routeTo = useNavigate();
-
+  const { id, title, createdDate: uploadDate, qualityScore, viewCount } = video;
+  
   return (
     <view
-      className="VideoThumbnail--View"
-      bindtap={() => routeTo(`/videos/:${id}`)}
+      bindtap={() => routeTo(`/videos/p/:${id}`)}
       style={{
         position: 'relative',
+        width: width ? `${width}px` : '150px',
       }}
     >
+      {/* Thumbnail */}
       <image
-        className="VideoThumbnail--Thumbnail"
         src={VideoListApi.getVideoThumbnail(id)}
-        mode="aspectFill"
         style={{
+          borderRadius: '4px',
           width: width ? `${width}px` : '150px',
           height: width ? `${(4 / 3) * width}px` : '200px',
         }}
@@ -160,7 +181,7 @@ export default function Video({
 
       {/* Bottom information */}
       <VideoPreviewOverlayBottom>
-        <VideoPreviewText text={`★ ${(Math.random() * 5).toFixed(1)}`} />
+        <VideoPreviewText text={`★ ${qualityScore.toFixed(1)}`} />
         <VideoPreviewText text={`▶ ${processViewCount(viewCount)}`} />
       </VideoPreviewOverlayBottom>
     </view>

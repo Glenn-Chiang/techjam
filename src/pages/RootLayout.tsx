@@ -1,11 +1,13 @@
 import { Outlet } from 'react-router';
 import { AppBar } from '../components/AppBar.js';
-import '../index.css'
+import '../index.css';
 
 export default function RootLayout() {
   return (
     <>
-      <Outlet />
+      <view style={{ paddingTop: 24, height: '100%' }}>
+        <Outlet />
+      </view>
       <AppBar />
     </>
   );

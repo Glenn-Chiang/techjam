@@ -21,8 +21,8 @@ export function Home() {
     // TODO: Call endpoint to analyse
     const videoId = 1; // Endpoint should return data containing id of newly analysed video
     setTimeout(() => {
-      navigate(`/videos/${videoId}`);
-    }, 3000);
+      navigate(`/videos/p/${videoId}`);
+    }, 1000);
   };
 
   return (
