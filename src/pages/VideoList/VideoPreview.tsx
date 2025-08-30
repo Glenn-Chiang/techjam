@@ -31,19 +31,6 @@ interface VideoPreviewProps {
   width?: number;
 }
 
-const processViewCount = (c: number) =>
-  c < 1000
-    ? `${c}`
-    : c < 1_000_000
-      ? `${(c / 1_000).toFixed(1)}K`
-      : c < 1_000_000_000
-        ? `${(c / 1_000_000).toFixed(1)}M`
-        : c < 1_000_000_000_000
-          ? `${(c / 1_000_000_000).toFixed(1)}B`
-          : c < 1_000_000_000_000_000
-            ? `${(c / 1_000_000_000_000).toFixed(1)}T`
-            : 'Infinity';
-
 const processRelativeUploadDate = (date: Date) => {
   const now = new Date();
   const diff = now.getTime() - date.getTime(); // ms difference
@@ -126,23 +113,6 @@ const VideoPreviewGradientBottom: React.FC = () => (
   />
 );
 
-const VideoPreviewPlayIconOverlay: React.FC = () => (
-  <view
-    style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    <text style={{ fontSize: '2.5rem', color: 'white' }}>▶</text>
-  </view>
-);
-
 export default function VideoPreview({
   video,
   width
@@ -169,7 +139,6 @@ export default function VideoPreview({
       />
 
       {/* Overlays and play icon */}
-      <VideoPreviewPlayIconOverlay />
       <VideoPreviewGradientTop />
       <VideoPreviewGradientBottom />
 
@@ -182,7 +151,6 @@ export default function VideoPreview({
       {/* Bottom information */}
       <VideoPreviewOverlayBottom>
         <VideoPreviewText text={`★ ${qualityScore.toFixed(1)}`} />
-        <VideoPreviewText text={`▶ ${processViewCount(viewCount)}`} />
       </VideoPreviewOverlayBottom>
     </view>
   );
