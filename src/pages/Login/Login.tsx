@@ -7,12 +7,20 @@ import { useNavigate } from 'react-router';
 import Link from '../../components/Link.js';
 import Logo from '../../components/Logo.js';
 import { verifyEmail } from '../../utils/input.js';
+import { ErrorAlert } from '../../components/ErrorAlert.js';
 
 export default function Login() {
   const route = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { mutate } = useLogin();
+  const { mutate, isPending, isError, error } = useLogin();
+
+  const onTapLogin = () => {
+    mutate(
+      { email, password },
+      { onSuccess: () => route('/') },
+    );
+  };
 
   return (
     <view className="login-page">
@@ -32,23 +40,12 @@ export default function Login() {
       </view>
       <Button
         label="Login"
-        onTap={() =>
-          mutate({ email, password }, { onSuccess: () => route('/') })
+        onTap={onTapLogin
         }
-        disabled={!verifyEmail(email) || password.length < 8}
+        disabled={!verifyEmail(email) || password.length < 8 || isPending}
         fullWidth
       />
-      {/* Create an account with the credential below for fast login for development purposes. */}
-      <Button
-        label="Test Login"
-        style={{ backgroundColor: 'red'}}
-        onTap={() =>
-          mutate(
-            { email: 'user@example.com', password: 'password' },
-            { onSuccess: () => route('/') },
-          )
-        }
-      />
+      {isError && <ErrorAlert message={`Error logging in: ${error}`} />}
       <view style={{ marginTop: '24px' }}>
         <text>Don't have an account?</text>
         <Link bindtap={() => route('/signup')}>Sign Up</Link>
