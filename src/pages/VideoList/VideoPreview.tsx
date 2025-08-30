@@ -7,7 +7,6 @@ import VideoListApi from './VideoListApi.js';
 export interface VideoPreviewData {
   id: string;
   title: string;
-  viewCount: number;
   qualityScore: number;
   createdDate: Date;
   width?: number;
@@ -118,7 +117,7 @@ export default function VideoPreview({
   width
 }: VideoPreviewProps) {
   const routeTo = useNavigate();
-  const { id, title, createdDate: uploadDate, qualityScore, viewCount } = video;
+  const { id, title, createdDate: uploadDate, qualityScore } = video;
   
   return (
     <view

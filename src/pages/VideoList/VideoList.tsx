@@ -10,7 +10,6 @@ import SimplePage from '../../components/SimplePage.js';
 
 enum VideoSortParameter {
   QualityScore,
-  ViewCount,
   CreatedDate,
   Clarity,
   EduValue,
@@ -80,9 +79,6 @@ export default function VideoList() {
       switch (s.param) {
         case VideoSortParameter.QualityScore:
           return compareVideo(a.qualityScore, b.qualityScore, s.order);
-
-        case VideoSortParameter.ViewCount:
-          return compareVideo(a.viewCount, b.viewCount, s.order);
 
         case VideoSortParameter.CreatedDate:
           return compareVideo(

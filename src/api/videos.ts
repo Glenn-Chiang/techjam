@@ -14,8 +14,9 @@ export const fetchVideoBreakdowns = async (): Promise<VideoBreakdown[]> => {
 
 export const fetchVideoBreakdown = async (
   videoId: number,
+  token: string,
 ): Promise<VideoBreakdown> => {
-  const response = await apiFetch(`/content/${videoId}`);
+  const response = await apiFetch(`/content/${videoId}`, {}, token);
   if (!response.ok) {
     throw new Error(`Failed to fetch video breakdown for video: ${videoId}`);
   }
@@ -25,12 +26,13 @@ export const fetchVideoBreakdown = async (
 
 export const generateVideoBreakdown = async (
   videoUrl: string,
+  token: string,
 ): Promise<VideoBreakdown> => {
   const response = await apiFetch('/content', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ videoUrl }),
-  });
+  }, token);
   if (!response.ok) {
     throw new Error('Failed to generate breakdown');
   }
@@ -43,7 +45,7 @@ export const fetchConsumerVideos = async (
   stub?: boolean,
 ): Promise<VideoPreviewData[]> => {
   if (stub === true) {
-    const response: VideoPreviewData[] = await apiFetch('/content/c'); // should have a route for consumer view?
+    const response: VideoPreviewData[] = await apiFetch('/content/c');
     return response;
   }
 
@@ -61,7 +63,6 @@ export const fetchConsumerVideos = async (
   return Array.from({ length: 20 }, (_, i) => ({
     id: `${i + 1}`,
     title: `Sample Video ${i + 1}`,
-    viewCount: Math.floor(Math.random() * 100000), // random views
     qualityScore: Math.random() * 100,
     createdDate: randomDate(new Date('2025-01-01'), new Date()), // random date between Jan 1 2025 and now
     clarity: stubMetric(),

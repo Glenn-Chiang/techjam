@@ -7,9 +7,17 @@ interface ButtonProps {
   disabled?: boolean;
   style?: CSSProperties;
   textStyle?: CSSProperties;
+  fullWidth?: boolean;
 }
 
-export function Button({ onTap, label, disabled, style, textStyle }: ButtonProps) {
+export function Button({
+  onTap,
+  label,
+  disabled,
+  style,
+  textStyle,
+  fullWidth,
+}: ButtonProps) {
   const handleTap = () => {
     if (!disabled) {
       onTap();
@@ -17,7 +25,7 @@ export function Button({ onTap, label, disabled, style, textStyle }: ButtonProps
   };
   return (
     <view
-      style={style}
+      style={{ ...style, ...(fullWidth ? { width: '100%' } : {}) }}
       className={`button ${disabled && 'button-disabled'}`}
       bindtap={handleTap}
     >

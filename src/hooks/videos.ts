@@ -5,6 +5,7 @@ import {
   fetchVideoBreakdown,
   generateVideoBreakdown,
 } from '../api/videos.js';
+import { useUser } from './auth.js';
 
 // Hook to fetch all video breakdowns
 export const useVideoBreakdowns = () => {
@@ -16,18 +17,20 @@ export const useVideoBreakdowns = () => {
 
 // Hook to fetch a single video breakdown by ID
 export const useVideoBreakdown = (videoId: number) => {
+  const { user } = useUser();
   return useQuery<VideoBreakdown, Error>({
     queryKey: ['videoBreakdown', videoId],
-    queryFn: () => fetchVideoBreakdown(videoId),
+    queryFn: () => fetchVideoBreakdown(videoId, user.token),
   });
 };
 
 // Hook to generate a video breakdown
 export const useGenerateVideoBreakdown = () => {
   const queryClient = useQueryClient();
-
+  const { user } = useUser();
   return useMutation<VideoBreakdown, Error, string>({
-    mutationFn: (videoUrl: string) => generateVideoBreakdown(videoUrl),
+    mutationFn: (videoUrl: string) =>
+      generateVideoBreakdown(videoUrl, user.token),
     onSuccess: () => {
       // Refetch video breakdowns
       queryClient.invalidateQueries({ queryKey: ['videoBreakdowns'] });

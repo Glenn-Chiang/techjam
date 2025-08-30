@@ -6,6 +6,7 @@ import './Signup.css';
 import { useNavigate } from 'react-router';
 import Link from '../../components/Link.js';
 import Logo from '../../components/Logo.js';
+import { verifyEmail } from '../../utils/input.js';
 
 export default function Signup() {
   const route = useNavigate();
@@ -37,10 +38,12 @@ export default function Signup() {
         />
       </view>
       <Button
+        disabled={!verifyEmail(email) || password.length < 8 || name === ''}
         label="Sign Up"
         onTap={() =>
           mutate({ name, email, password }, { onSuccess: () => route('/') })
         }
+        fullWidth
       />
       <view style={{ marginTop: '24px' }}>
         <text>Already have an account?</text>

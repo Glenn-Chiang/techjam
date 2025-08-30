@@ -16,7 +16,7 @@ export function Home() {
   };
 
   const navigate = useNavigate();
-  const { mutate, isPending, isError } = useGenerateVideoBreakdown();
+  const { mutate, isPending, isError, error } = useGenerateVideoBreakdown();
   // const apiFetch = useApiFetch();
 
   const onTapAnalyse = () => {
@@ -41,14 +41,14 @@ export function Home() {
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
-          gap: 8,
+          gap: '8px',
         }}
       >
         {!isPending && (
           <>
             <input
               className="url-input"
-              placeholder="Enter video url"
+              placeholder="Enter video URL"
               bindinput={handleInput}
             />
             <Button
@@ -82,7 +82,7 @@ export function Home() {
             <Spinner />
           </view>
         )}
-        {isError && <ErrorAlert message="Error analysing video" />}
+        {isError && <ErrorAlert message={`Error analysing video: ${error}`} />}
       </view>
     </view>
   );
