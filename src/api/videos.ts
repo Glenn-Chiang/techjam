@@ -6,11 +6,7 @@ import { apiFetch, apiFetchML } from './baseApi.js';
 /* Video Breakdown API */
 export const fetchVideoBreakdowns = async (token: string): Promise<VideoBreakdownGetData[]> => {
   const response = await apiFetch('/content', {}, token);
-  if (!response.ok) {
-    throw new Error('Failed to fetch video breakdowns');
-  }
-  const data = await response.json();
-  return data;
+  return response;
 };
 
 export const fetchVideoBreakdown = async (
