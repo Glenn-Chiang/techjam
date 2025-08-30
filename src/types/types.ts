@@ -19,3 +19,12 @@ export interface VideoAnalysisMetric {
   score: number;
   feedback: string;
 }
+
+export interface UserData {
+  id: string;
+  name: string,
+  email: string,
+  walletBalance: number,
+  averageContentQuality: number,
+  token: string,
+}
