@@ -5,6 +5,7 @@ import { useSignup } from '../../hooks/auth.js';
 import './Signup.css';
 import { useNavigate } from 'react-router';
 import Link from '../../components/Link.js';
+import Logo from '../../components/Logo.js';
 
 export default function Signup() {
   const route = useNavigate();
@@ -15,6 +16,7 @@ export default function Signup() {
 
   return (
     <view className="signup-page">
+      <Logo style={{ height: '100px' }} />
       <view>
         <TextField
           placeholder="Name"

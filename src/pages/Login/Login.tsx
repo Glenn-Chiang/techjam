@@ -5,6 +5,7 @@ import { useLogin } from '../../hooks/auth.js';
 import './Login.css';
 import { useNavigate } from 'react-router';
 import Link from '../../components/Link.js';
+import Logo from '../../components/Logo.js';
 
 export default function Login() {
   const route = useNavigate();
@@ -14,6 +15,7 @@ export default function Login() {
 
   return (
     <view className="login-page">
+      <Logo style={{ height: '100px'}} />
       <view>
         <TextField
           placeholder="Email"
