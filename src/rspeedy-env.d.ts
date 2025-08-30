@@ -8,6 +8,15 @@ declare module '@lynx-js/types' {
      * These types will be accessible through `lynx.__globalProps`.
      */
   }
+  interface IntrinsicElements extends Lynx.IntrinsicElements {
+    input: {
+      bindinput?: (e: { type: 'input'; detail: { value: string } }) => void;
+      type?: string;
+      value?: string | undefined;
+      placeholder?: string;
+      className?: string;
+    };
+  }
 }
 
 // This export makes the file a module
