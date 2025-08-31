@@ -1,15 +1,12 @@
-import { useLocation, useNavigate, useParams } from 'react-router';
-import {
-  useSaveVideoBreakdown,
-  useVideoBreakdown,
-} from '../../hooks/videos.js';
+import { useLocation, useParams } from 'react-router';
+import { useVideoBreakdown } from '../../hooks/videos.js';
 import type { VideoAnalysisMetric, VideoBreakdown } from '../../types/types.js';
 import './VideoBreakdown.css';
 import { ErrorAlert } from '../../components/ErrorAlert.js';
 import LoadingPage from '../../components/LoadingPage.js';
-import TextField from '../../components/TextField.js';
 import { useState } from 'react';
-import { Button } from '../../components/Button.js';
+import { useEffect } from 'react';
+import { fetchVideoBreakdown } from '../../api/videos.js';
 import { useUser } from '../../hooks/auth.js';
 
 const dummyData: VideoBreakdown = {
@@ -86,42 +83,34 @@ export interface VideoBreakdownGetData {
   createdAt: string;
 }
 
-export default function VideoBreakdown() {
+export default function VideoBreakdownNew() {
   const location = useLocation();
-  
+
   const { videoId } = useParams();
-  const { mutate } = useSaveVideoBreakdown();
+  const [breakdownData, setBreakdownData] = useState<VideoBreakdownGetData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setIsError] = useState(false);
   const { user } = useUser();
-  const { data, isLoading, isError, error } = useVideoBreakdown(videoId ?? '');
-  
-  const [title, setTitle] = useState('');
-  const [isSaved, setIsSaved] = useState(false);
+  //   const { data, isLoading, isError, error } = useVideoBreakdown(videoId ?? 'a');
+  //   const breakdownData = data;
 
-  const isNew = location.state.result !== undefined;
-  const breakdownData: QualityScore = isNew ? location.state.result : data;
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchBreakdown = async () =>
+      setBreakdownData(
+        await fetchVideoBreakdown(videoId ?? 'a', user.token).finally(() =>
+          setIsLoading(false),
+        ),
+      );
+    fetchBreakdown();
+  }, []);
 
-  const onTapSaveBreakdown = () => {
-    mutate(
-      {
-        creatorId: user.id,
-        title,
-        type: 'VIDEO',
-        url: location.state.url,
-        education: breakdownData.education.score,
-        delivery: breakdownData.delivery.score,
-        audioVisual: breakdownData.audioVisual.score,
-        communityGuidelines: breakdownData.communityGuidelines.score,
-      },
-      { onSuccess: () => setIsSaved(true) },
-    );
-  };
-
-  // if (isError && breakdownData === undefined) {
-  //   return <ErrorAlert message={`Error loading video breakdown: ${error}`} />;
-  // }
-
-  if (isLoading || (!data && breakdownData === undefined)) {
+  if (isLoading) {
     return <LoadingPage />;
+  }
+
+  if (error || !breakdownData) {
+    return <ErrorAlert message={`Error loading video breakdown: ${error}`} />;
   }
 
   const metrics: {
@@ -132,18 +121,22 @@ export default function VideoBreakdown() {
     {
       label: 'Educational Value',
       icon: '🎓',
-      metric: breakdownData.education,
+      metric: { score: breakdownData.education, feedback: '' },
     },
-    { label: 'Delivery', icon: '🎤', metric: breakdownData.delivery },
+    {
+      label: 'Delivery',
+      icon: '🎤',
+      metric: { score: breakdownData.delivery, feedback: '' },
+    },
     {
       label: 'Audio/Visual',
       icon: '🎬',
-      metric: breakdownData.audioVisual,
+      metric: { score: breakdownData.audioVisual, feedback: '' },
     },
     {
       label: 'Community Guidelines',
       icon: '⚖️',
-      metric: breakdownData.communityGuidelines,
+      metric: { score: breakdownData.communityGuidelines, feedback: '' },
     },
     // { label: 'Length', icon: '⏱️', metric: newBreakdownData.contentQuality.length },
   ];
@@ -163,11 +156,8 @@ export default function VideoBreakdown() {
             className="video-thumbnail"
           />
         </view> */}
-        <text>{`Video URL: ${location.state.url}`}</text>
-        <TextField
-          placeholder="Video Title"
-          bindinput={(e) => setTitle(e.detail.value)}
-        />
+        <text>{`Video URL: ${breakdownData.url}`}</text>
+        <text>{breakdownData.title}</text>
         <view
           className="score-circle"
           style={{ backgroundColor: scoreToColor(avgScore) }}
@@ -188,12 +178,6 @@ export default function VideoBreakdown() {
             />
           ))}
         </view>
-        {isNew && <Button
-          label={isSaved ? 'Saved' : 'Save'}
-          onTap={onTapSaveBreakdown}
-          fullWidth
-          disabled={title === '' || isSaved}
-        />}
       </view>
     </scroll-view>
   );

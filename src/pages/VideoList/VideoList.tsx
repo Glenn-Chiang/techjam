@@ -207,7 +207,7 @@ export default function VideoList() {
         >
           <FilterButton
             onTap={makeFilter(VideoSortParameter.QualityScore)}
-            label="Educational Value"
+            label="Quality Score"
             disabled={sortConfig.param === VideoSortParameter.QualityScore}
           />
           <FilterButton
