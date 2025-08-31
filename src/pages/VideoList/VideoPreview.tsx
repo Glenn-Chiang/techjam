@@ -122,7 +122,7 @@ export default function VideoPreview({
   const avgScore = (education + communityGuidelines + delivery + audioVisual) / 4;
   return (
     <view
-      bindtap={() => routeTo(`/videos/p/:${id}`)}
+      bindtap={() => routeTo(`/videos/p/${id}`)}
       style={{
         position: 'relative',
         width: width ? `${width}px` : '150px',
@@ -145,6 +145,7 @@ export default function VideoPreview({
       {/* Top information */}
       <VideoPreviewOverlayTop>
         <VideoPreviewText text={title} />
+        <VideoPreviewText text={id} />
         <VideoPreviewText text={processRelativeUploadDate(new Date(createdAt))} />
       </VideoPreviewOverlayTop>
 

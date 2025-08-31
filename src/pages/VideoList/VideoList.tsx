@@ -72,11 +72,12 @@ export default function VideoList() {
   });
 
   useEffect(() => {
+    if (videos.length !== 0) return;
     setIsLoading(true);
     const fetchVideos = async () =>
       setVideos(await (fetchVideoBreakdowns(user.token).finally(() => setIsLoading(false))));
     fetchVideos();
-  }, [user.token]);
+  }, [user.token, videos]);
 
   const makeFilter = (param: VideoSortParameter) => () =>
     setSortConfig((conf) => ({

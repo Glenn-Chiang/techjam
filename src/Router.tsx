@@ -16,7 +16,8 @@ export default function Router() {
           <Route path="/videos" element={<VideoList />} />
           {/* /p indicates producer (creator) view */}
           {/* /c indicates consumer (viewer) view */}
-          <Route path="/videos/p/:video_id" element={<VideoBreakdown />} />
+          <Route path="/videos/p/result" element={<VideoBreakdown />} />
+          <Route path="/videos/p/:videoId" element={<VideoBreakdown />} />
           <Route path="/videos/c/:video_id" element={<VideoView />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

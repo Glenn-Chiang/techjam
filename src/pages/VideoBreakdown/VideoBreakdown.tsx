@@ -87,17 +87,18 @@ export interface VideoBreakdownGetData {
 }
 
 export default function VideoBreakdown() {
-  const { videoId } = useParams();
   const location = useLocation();
-  const route = useNavigate();
-  const [title, setTitle] = useState('');
-  const { data, isLoading, isError, error } = useVideoBreakdown(
-    Number(videoId),
-  );
-
-  const newBreakdownData: QualityScore = location.state.result;
+  
+  const { videoId } = useParams();
   const { mutate } = useSaveVideoBreakdown();
   const { user } = useUser();
+  const { data, isLoading, isError, error } = useVideoBreakdown(videoId ?? '');
+  
+  const [title, setTitle] = useState('');
+  const [isSaved, setIsSaved] = useState(false);
+
+  const isNew = location.state.result !== undefined;
+  const breakdownData: QualityScore = isNew ? location.state.result : data;
 
   const onTapSaveBreakdown = () => {
     mutate(
@@ -106,20 +107,20 @@ export default function VideoBreakdown() {
         title,
         type: 'VIDEO',
         url: location.state.url,
-        education: newBreakdownData.education.score,
-        delivery: newBreakdownData.delivery.score,
-        audioVisual: newBreakdownData.audioVisual.score,
-        communityGuidelines: newBreakdownData.communityGuidelines.score,
+        education: breakdownData.education.score,
+        delivery: breakdownData.delivery.score,
+        audioVisual: breakdownData.audioVisual.score,
+        communityGuidelines: breakdownData.communityGuidelines.score,
       },
-      { onSuccess: (res) => route(`/videos/p/${res.id}`) },
+      { onSuccess: () => setIsSaved(true) },
     );
   };
 
-  if (isError && newBreakdownData === undefined) {
+  if (isError && breakdownData === undefined) {
     return <ErrorAlert message={`Error loading video breakdown: ${error}`} />;
   }
 
-  if (isLoading || (!data && newBreakdownData === undefined)) {
+  if (isLoading || (!data && breakdownData === undefined)) {
     return <LoadingPage />;
   }
 
@@ -131,18 +132,18 @@ export default function VideoBreakdown() {
     {
       label: 'Educational Value',
       icon: '🎓',
-      metric: newBreakdownData.education,
+      metric: breakdownData.education,
     },
-    { label: 'Delivery', icon: '🎤', metric: newBreakdownData.delivery },
+    { label: 'Delivery', icon: '🎤', metric: breakdownData.delivery },
     {
       label: 'Audio/Visual',
       icon: '🎬',
-      metric: newBreakdownData.audioVisual,
+      metric: breakdownData.audioVisual,
     },
     {
       label: 'Community Guidelines',
       icon: '⚖️',
-      metric: newBreakdownData.communityGuidelines,
+      metric: breakdownData.communityGuidelines,
     },
     // { label: 'Length', icon: '⏱️', metric: newBreakdownData.contentQuality.length },
   ];
@@ -187,12 +188,12 @@ export default function VideoBreakdown() {
             />
           ))}
         </view>
-        <Button
-          label="Save"
+        {isNew && <Button
+          label={isSaved ? 'Saved' : 'Save'}
           onTap={onTapSaveBreakdown}
           fullWidth
-          disabled={title === ''}
-        />
+          disabled={title === '' || isSaved}
+        />}
       </view>
     </scroll-view>
   );

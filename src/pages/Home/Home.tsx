@@ -23,7 +23,7 @@ export function Home() {
     mutate(inputContent, {
       // Redirect to video breakdown page
       onSuccess: (res) => {
-        navigate(`/videos/p/${res.id}`, {
+        navigate(`/videos/p/result`, {
           state: { result: res, url: inputContent },
         });
       },

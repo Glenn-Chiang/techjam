@@ -11,16 +11,16 @@ import type { VideoBreakdownGetData, VideoBreakdownPostData } from '../pages/Vid
 
 // Hook to fetch all video breakdowns
 export const useVideoBreakdowns = () => {
-  return useQuery<VideoBreakdown[], Error>({
+  return useQuery<VideoBreakdownGetData[], Error>({
     queryKey: ['videoBreakdowns'],
     queryFn: fetchVideoBreakdowns,
   });
 };
 
 // Hook to fetch a single video breakdown by ID
-export const useVideoBreakdown = (videoId: number) => {
+export const useVideoBreakdown = (videoId: string) => {
   const { user } = useUser();
-  return useQuery<VideoBreakdown, Error>({
+  return useQuery<VideoBreakdownGetData, Error>({
     queryKey: ['videoBreakdown', videoId],
     queryFn: () => fetchVideoBreakdown(videoId, user.token),
   });

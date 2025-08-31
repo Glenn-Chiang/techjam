@@ -10,15 +10,11 @@ export const fetchVideoBreakdowns = async (token: string): Promise<VideoBreakdow
 };
 
 export const fetchVideoBreakdown = async (
-  videoId: number,
+  videoId: string,
   token: string,
-): Promise<VideoBreakdown> => {
+): Promise<VideoBreakdownGetData> => {
   const response = await apiFetch(`/content/${videoId}`, {}, token);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch video breakdown for video: ${videoId}`);
-  }
-  const data = await response.json();
-  return data;
+  return response;
 };
 
 export const saveVideoBreakdown = async (
@@ -34,12 +30,8 @@ export const saveVideoBreakdown = async (
     },
     token,
   );
-  if (!response.ok) {
-    throw new Error(`Failed to save video breakdown`);
-  }
 
-  const respData = await response.json();
-  return respData;
+  return response;
 };
 
 export const generateVideoBreakdown = async (
